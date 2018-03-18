@@ -15,28 +15,42 @@ namespace License_Generator
         DataGrid_methods datagridmethods = new DataGrid_methods();
         Encode en = new Encode_num();
         Encode et = new Encode_text();
-        Node<Row> rows;
-        Row first;
+        Node<Row> rowlist;
+        string featureType;
+        string featureInput;
+        string code;
+        string serialnumber;
         public MainWindow()
         {
             InitializeComponent();
             
         }
-        public string Generate_License()
+        public void Generate_License()
         {
-            string featureType = featCMB.Text;
-            string featureInput = featTB.Text;
-            //switch (featureType)
-            //{
-            //    case "Number":
-            //        en.Get_License(1, featureInput, 234);
-            //        break;
-            //    case "Text":
-            //        et.Get_License(1, featureInput, 234);
-            //        break;
-            //}
-            //return featureType +": "+featureInput;
-            return datagridmethods.Read(dataGridView1).ToString();
+            featureType = featCMB.Text;
+            featureInput = featTB.Text;
+            rowlist = datagridmethods.Read(dataGridView1);
+            Node<Row> rowspointer = rowlist;
+            while (rowspointer != null)
+            {
+                rowspointer.GetValue().feature = featureInput;
+                code = rowspointer.GetValue().code;
+                serialnumber = rowspointer.GetValue().serial_number;
+                switch (featureType)
+                {
+                    case "Text":
+                        rowspointer.GetValue().license = et.Get_License(code, featureInput, serialnumber);
+                        rowspointer.GetValue().verified = et.Verify(rowspointer.GetValue().license, code, serialnumber);
+                        break;
+                    case "Number":
+                        rowspointer.GetValue().license = en.Get_License(code, featureInput, serialnumber);
+                        rowspointer.GetValue().verified = en.Verify(rowspointer.GetValue().license, code, serialnumber);
+                        break;
+                }
+                rowspointer = rowspointer.GetNext();
+            }
+            MessageBox.Show("license generated");
+
         }
         public void Import_File()
         {
@@ -51,7 +65,9 @@ namespace License_Generator
         {
             if (featCMB.Text != "")
             {
-                MessageBox.Show(Generate_License());
+                Generate_License();
+                Node<Row> rowspointer = rowlist;
+                datagridmethods.Update(rowlist, dataGridView1);
             }
 
         }

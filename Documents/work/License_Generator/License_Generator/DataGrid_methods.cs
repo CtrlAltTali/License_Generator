@@ -13,6 +13,12 @@ namespace License_Generator
     {
         
         private string filepath;
+        /// <summary>
+        /// Opens File Manager so the user could choose an excel file
+        /// Input: No input
+        /// Output: No output
+        /// Author: amazingtali
+        /// </summary>
         public void OpenFileManager()
         {
             // Displays an OpenFileDialog so the user can select a Cursor.  
@@ -31,6 +37,12 @@ namespace License_Generator
                  
             }
         }
+        /// <summary>
+        /// Imports the chosen excel file to the form
+        /// Input: A dataGridView to host the excel file in the form
+        /// Output: No output
+        /// Author: amazingtali
+        /// </summary>
         public void Import(DataGridView dataGridView)
         {
             if (System.IO.File.Exists(filepath))
@@ -44,7 +56,7 @@ namespace License_Generator
                 {
                     connectionstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filepath + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=1\"";
                 }
-                string sheetname = GetSheetName(connectionstring);
+                string sheetname = GetSheetName(connectionstring,0);
                 //connect to excel file
                 MyConnection = new System.Data.OleDb.OleDbConnection(connectionstring); 
                 //select the whole table from excel file               
@@ -65,7 +77,13 @@ namespace License_Generator
                 MyConnection.Close();
             }
         }
-        private string GetSheetName(string connectionstring)
+        /// <summary>
+        /// Gets the name of the sheet that it's index is given
+        /// Input: an OLEDB connection string, a sheet index
+        /// Output: the sheet's name (string)
+        /// Author: amazingtali
+        /// </summary>
+        private string GetSheetName(string connectionstring, int index)
         {
             string sheetName = "";
             using (System.Data.OleDb.OleDbConnection conn = new System.Data.OleDb.OleDbConnection(connectionstring))
@@ -79,7 +97,7 @@ namespace License_Generator
                     // Get 1st sheet name in Excel File
                     DataTable dtSheet = conn.GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null);
 
-                    sheetName = dtSheet.Rows[0]["TABLE_NAME"].ToString();
+                    sheetName = dtSheet.Rows[index]["TABLE_NAME"].ToString();
 
 
                     cmd = null;
@@ -92,6 +110,12 @@ namespace License_Generator
             }
             return sheetName;
         }
+        /// <summary>
+        /// Reads the data from the dataGrid and returns a linked list that contains the rows in the table
+        /// Input: DataGridView
+        /// Output: A linked list of rows
+        /// Author: amazingtali
+        /// </summary>
         public Node<Row> Read(DataGridView dataGrid)
         {
             int num = 1;
@@ -123,6 +147,12 @@ namespace License_Generator
            }
             return row_list;
         }
+        /// <summary>
+        /// Adds a new row to the linked list of rows
+        /// Input: a linked list of rows, new row
+        /// Output: no output
+        /// Author: amazingtali
+        /// </summary>
         private void AddToList(Node<Row> rows, Row row)
         {
             while (rows.GetNext() != null)
@@ -131,6 +161,13 @@ namespace License_Generator
             }
             rows.SetNext(new Node<Row>(row));
         }
+
+        /// <summary>
+        /// Creates a serial number in a format that "Encode" function could read
+        /// Input: a number
+        /// Output: a formatted serial number (as a string)
+        /// Author: amazingtali
+        /// </summary>
         private string GetSerialNum(int n)
         {
             if (n / 10 == 0)
@@ -144,8 +181,29 @@ namespace License_Generator
         {
             MessageBox.Show(rows.ToString());
         }
-        public void Update(Node<Row> prevRows, Node<Row> newRows)
+        /// <summary>
+        /// visualizes data stored in the list, in the DataGridView 
+        /// Input: a linked list of rows, a DataGridView
+        /// Output: no output
+        /// Author: amazingtali
+        /// </summary>
+        public void Update(Node<Row> row_list, DataGridView dataGrid)
         {
+            for (int rows = 0; rows < dataGrid.Rows.Count; rows++)
+            {
+                if (dataGrid.Rows[rows].Cells[StaticVars.infoINDEX].Value != null)
+                {
+                    string info = dataGrid.Rows[rows].Cells[StaticVars.infoINDEX].Value.ToString();
+                    if (info.Contains("Hash"))
+                    {
+                        dataGrid.Rows[rows].Cells[StaticVars.featureINDEX].Value = row_list.GetValue().feature;
+                        dataGrid.Rows[rows].Cells[StaticVars.serialnumberINDEX].Value = row_list.GetValue().serial_number;
+                        dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = row_list.GetValue().license;
+                        dataGrid.Rows[rows].Cells[StaticVars.verifiedINDEX].Value = row_list.GetValue().verified;
+                        row_list = row_list.GetNext();
+                    }
+                }
+            }
             MessageBox.Show("updated");
         }
     }

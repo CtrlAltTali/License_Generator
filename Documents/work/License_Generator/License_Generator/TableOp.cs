@@ -9,7 +9,7 @@ namespace License_Generator
 {
     interface TableOp
     {
-         void Update(Node<Row> prevRows, Node<Row> newRows);
+         void Update(Node<Row> rows, DataGridView dataGrid);
          Node<Row> Read(DataGridView dataGrid);
     }
 }
