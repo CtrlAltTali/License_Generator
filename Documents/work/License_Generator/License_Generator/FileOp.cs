@@ -10,7 +10,7 @@ namespace License_Generator
     interface FileOp
     {
         void Import(DataGridView dataGridView);
-        void Export(Node<Row> rows);
+        void Export(Node<Row> row_list, string filename);
         void OpenFileManager();
     }
 }

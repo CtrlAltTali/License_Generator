@@ -62,6 +62,7 @@
             this.exportBTN.TabIndex = 1;
             this.exportBTN.Text = "Export";
             this.exportBTN.UseVisualStyleBackColor = false;
+            this.exportBTN.Click += new System.EventHandler(this.exportBTN_Click);
             // 
             // featLBL
             // 

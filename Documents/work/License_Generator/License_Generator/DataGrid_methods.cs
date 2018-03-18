@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Data;
 using System.Windows.Forms;
-using System.Data.SqlClient;
+using Microsoft.Office.Interop;
+using Microsoft.Office.Interop.Excel;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
+using System.Configuration;
+using System.IO;
 
 namespace License_Generator
 {
-    class DataGrid_methods: FileOp,TableOp
+    class DataGrid_methods : FileOp, TableOp
     {
-        
+
         private string filepath;
+
+
         /// <summary>
         /// Opens File Manager so the user could choose an excel file
         /// Input: No input
@@ -34,9 +42,11 @@ namespace License_Generator
                 // Assign the cursor in the Stream to the Form's Cursor property.  
                 filepath = openFileDialog.FileName;
                 MessageBox.Show(filepath);
-                 
+
             }
         }
+
+
         /// <summary>
         /// Imports the chosen excel file to the form
         /// Input: A dataGridView to host the excel file in the form
@@ -56,11 +66,11 @@ namespace License_Generator
                 {
                     connectionstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filepath + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=1\"";
                 }
-                string sheetname = GetSheetName(connectionstring,0);
+                string sheetname = GetSheetName(connectionstring, 0);
                 //connect to excel file
-                MyConnection = new System.Data.OleDb.OleDbConnection(connectionstring); 
+                MyConnection = new System.Data.OleDb.OleDbConnection(connectionstring);
                 //select the whole table from excel file               
-                MyCommand = new System.Data.OleDb.OleDbDataAdapter("select * from ["+sheetname+"]", MyConnection);
+                MyCommand = new System.Data.OleDb.OleDbDataAdapter("select * from [" + sheetname + "]", MyConnection);
                 MyCommand.TableMappings.Add("Table", "Net-informations.com");
                 DtSet = new System.Data.DataSet();
                 try
@@ -77,6 +87,8 @@ namespace License_Generator
                 MyConnection.Close();
             }
         }
+
+
         /// <summary>
         /// Gets the name of the sheet that it's index is given
         /// Input: an OLEDB connection string, a sheet index
@@ -95,7 +107,7 @@ namespace License_Generator
                     cmd.Connection = conn;
 
                     // Get 1st sheet name in Excel File
-                    DataTable dtSheet = conn.GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null);
+                    System.Data.DataTable dtSheet = conn.GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null);
 
                     sheetName = dtSheet.Rows[index]["TABLE_NAME"].ToString();
 
@@ -110,6 +122,8 @@ namespace License_Generator
             }
             return sheetName;
         }
+
+
         /// <summary>
         /// Reads the data from the dataGrid and returns a linked list that contains the rows in the table
         /// Input: DataGridView
@@ -133,20 +147,22 @@ namespace License_Generator
                         code = info.Substring(info.Length - 12);
                         serial_num = GetSerialNum(num);
                         feature = dataGrid.Rows[rows].Cells[4].Value.ToString();
-                        if(row_list.GetValue() == null)
+                        if (row_list.GetValue() == null)
                         {
                             row_list.SetValue(new Row(code, serial_num, feature));
                         }
                         else
                         {
                             AddToList(row_list, new Row(code, serial_num, feature));
-                        }                        
+                        }
                         num++;
                     }
                 }
-           }
+            }
             return row_list;
         }
+
+
         /// <summary>
         /// Adds a new row to the linked list of rows
         /// Input: a linked list of rows, new row
@@ -161,6 +177,7 @@ namespace License_Generator
             }
             rows.SetNext(new Node<Row>(row));
         }
+
 
         /// <summary>
         /// Creates a serial number in a format that "Encode" function could read
@@ -177,10 +194,8 @@ namespace License_Generator
             else
                 return n.ToString();
         }
-        public void Export(Node<Row> rows)
-        {
-            MessageBox.Show(rows.ToString());
-        }
+
+
         /// <summary>
         /// visualizes data stored in the list, in the DataGridView 
         /// Input: a linked list of rows, a DataGridView
@@ -205,6 +220,61 @@ namespace License_Generator
                 }
             }
             MessageBox.Show("updated");
+        }
+
+
+        /// <summary>
+        /// exports the linked list of rows to an excel file
+        /// Input: a linked list of rows, a file path (as a string)
+        /// Output: no output
+        /// Author: amazingtali
+        /// </summary>
+        public void Export(Node<Row> row_list, string filepath)
+        {
+            Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
+
+            if (xlApp == null)
+            {
+                MessageBox.Show("Excel is not properly installed!!");
+                return;
+            }
+
+
+            Excel.Workbook xlWorkBook;
+            Excel.Worksheet xlWorkSheet;
+            object misValue = System.Reflection.Missing.Value;
+
+            xlWorkBook = xlApp.Workbooks.Add(misValue);
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            xlWorkSheet.Cells[1, 1] = "Hash Code";
+            xlWorkSheet.Cells[1, 2] = "Serial Number";
+            xlWorkSheet.Cells[1, 3] = "Feature";
+            xlWorkSheet.Cells[1, 4] = "License";
+            xlWorkSheet.Cells[1, 5] = "Verified";
+            int i = 2;
+            while (row_list != null)
+            {
+                xlWorkSheet.Cells[i, 1] = row_list.GetValue().code.ToString();
+                xlWorkSheet.Cells[i, 2] = row_list.GetValue().serial_number.ToString();
+                xlWorkSheet.Cells[i, 3] = row_list.GetValue().feature.ToString(); ;
+                xlWorkSheet.Cells[i, 4] = row_list.GetValue().license.ToString(); ;
+                xlWorkSheet.Cells[i, 5] = row_list.GetValue().verified.ToString();
+                i++;
+                row_list = row_list.GetNext();
+            }
+
+
+            xlWorkBook.Saved = true;
+            xlWorkBook.SaveCopyAs(filepath);
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+            Marshal.ReleaseComObject(xlWorkSheet);
+            Marshal.ReleaseComObject(xlWorkBook);
+            Marshal.ReleaseComObject(xlApp);
+
+            MessageBox.Show("Excel file created , you can find the file " + filepath);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace License_Generator
 {
@@ -25,12 +26,22 @@ namespace License_Generator
             InitializeComponent();
             
         }
+
+
+        /// <summary>
+        /// gets a license and puts it in the suitable row
+        /// Input: No input
+        /// Output: No output
+        /// Author: amazingtali
+        /// </summary>
         public void Generate_License()
         {
             featureType = featCMB.Text;
             featureInput = featTB.Text;
             rowlist = datagridmethods.Read(dataGridView1);
             Node<Row> rowspointer = rowlist;
+            if (dataGridView1.Rows[0].Cells[6].Value.ToString() == "")
+                dataGridView1.Rows[0].Cells[6].Value = "Verified";
             while (rowspointer != null)
             {
                 rowspointer.GetValue().feature = featureInput;
@@ -52,22 +63,47 @@ namespace License_Generator
             MessageBox.Show("license generated");
 
         }
+
+
+        /// <summary>
+        /// Opens File Manager and imports an excel file to the DataGridView
+        /// Input: No input
+        /// Output: No output
+        /// Author: amazingtali
+        /// </summary>
         public void Import_File()
         {
             datagridmethods.OpenFileManager();
             datagridmethods.Import(dataGridView1);
         }
+
+
+        /// <summary>
+        /// exports the data to a new excel file
+        /// Input: No input
+        /// Output: No output
+        /// Author: amazingtali
+        /// </summary>
         public void Export_File()
         {
-
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Excel Documents (*.xls)|*.xls";
+            sfd.FileName = "export.xls";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                Node<Row> rowspointer = rowlist;
+                datagridmethods.Export(rowspointer, Path.GetFullPath(sfd.FileName));
+            }
         }
+
+        ////////////////////////////////////////////////////////////////////////
         private void generateBTN_Click(object sender, EventArgs e)
         {
             if (featCMB.Text != "")
             {
                 Generate_License();
                 Node<Row> rowspointer = rowlist;
-                datagridmethods.Update(rowlist, dataGridView1);
+                datagridmethods.Update(rowspointer, dataGridView1);
             }
 
         }
@@ -75,6 +111,11 @@ namespace License_Generator
         private void importBTN_Click(object sender, EventArgs e)
         {
             Import_File();
+        }
+
+        private void exportBTN_Click(object sender, EventArgs e)
+        {
+            Export_File();
         }
     }
 }
