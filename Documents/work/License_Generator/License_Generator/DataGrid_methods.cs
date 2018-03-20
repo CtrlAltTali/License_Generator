@@ -135,6 +135,7 @@ namespace License_Generator
             int num = 1;
             string serial_num;
             string code;
+            string ID;
             string feature;
             Node<Row> row_list = new Node<Row>();
             for (int rows = 0; rows < dataGrid.Rows.Count; rows++)
@@ -144,16 +145,17 @@ namespace License_Generator
                     string info = dataGrid.Rows[rows].Cells[2].Value.ToString();
                     if (info.Contains("Hash"))
                     {
+                        ID = dataGrid.Rows[rows].Cells[1].Value.ToString();
                         code = info.Substring(info.Length - 12);
                         serial_num = GetSerialNum(num);
                         feature = dataGrid.Rows[rows].Cells[4].Value.ToString();
                         if (row_list.GetValue() == null)
                         {
-                            row_list.SetValue(new Row(code, serial_num, feature));
+                            row_list.SetValue(new Row(ID, code, serial_num, feature));
                         }
                         else
                         {
-                            AddToList(row_list, new Row(code, serial_num, feature));
+                            AddToList(row_list, new Row(ID, code, serial_num, feature));
                         }
                         num++;
                     }
@@ -219,7 +221,7 @@ namespace License_Generator
                     }
                 }
             }
-            MessageBox.Show("updated");
+            MessageBox.Show("Table was updated");
         }
 
 
@@ -247,19 +249,22 @@ namespace License_Generator
             xlWorkBook = xlApp.Workbooks.Add(misValue);
             xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
 
-            xlWorkSheet.Cells[1, 1] = "Hash Code";
-            xlWorkSheet.Cells[1, 2] = "Serial Number";
-            xlWorkSheet.Cells[1, 3] = "Feature";
-            xlWorkSheet.Cells[1, 4] = "License";
-            xlWorkSheet.Cells[1, 5] = "Verified";
+            xlWorkSheet.Cells[1, 1] = "ID";
+            xlWorkSheet.Cells[1, 2] = "Hash Code";
+            xlWorkSheet.Cells[1, 3] = "Serial Number";
+            xlWorkSheet.Cells[1, 4] = "Feature";
+            xlWorkSheet.Cells[1, 5] = "License";
+            xlWorkSheet.Cells[1, 6] = "Verified";
+            
             int i = 2;
             while (row_list != null)
             {
-                xlWorkSheet.Cells[i, 1] = row_list.GetValue().code.ToString();
-                xlWorkSheet.Cells[i, 2] = row_list.GetValue().serial_number.ToString();
-                xlWorkSheet.Cells[i, 3] = row_list.GetValue().feature.ToString(); ;
-                xlWorkSheet.Cells[i, 4] = row_list.GetValue().license.ToString(); ;
-                xlWorkSheet.Cells[i, 5] = row_list.GetValue().verified.ToString();
+                xlWorkSheet.Cells[i, 1] = row_list.GetValue().ID.ToString();
+                xlWorkSheet.Cells[i, 2] = row_list.GetValue().code.ToString();
+                xlWorkSheet.Cells[i, 3] = row_list.GetValue().serial_number.ToString();
+                xlWorkSheet.Cells[i, 4] = row_list.GetValue().feature.ToString(); ;
+                xlWorkSheet.Cells[i, 5] = row_list.GetValue().license.ToString(); ;
+                xlWorkSheet.Cells[i, 6] = row_list.GetValue().verified.ToString();
                 i++;
                 row_list = row_list.GetNext();
             }
