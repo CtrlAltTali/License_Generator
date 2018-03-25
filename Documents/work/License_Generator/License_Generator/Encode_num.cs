@@ -8,6 +8,9 @@ namespace License_Generator
 {
     class Encode_num: Encode
     {
+        public Encode_num(string IP, string user, string plink_path) : base(IP,user,plink_path)
+        {
+        }
         public override string Get_License(string code, string feature, string serial_num)
         {
             int feat = int.Parse(feature);

@@ -137,6 +137,7 @@ namespace License_Generator
             string code;
             string ID;
             string feature;
+            string prefix = "";
             Node<Row> row_list = new Node<Row>();
             for (int rows = 0; rows < dataGrid.Rows.Count; rows++)
             {
@@ -147,7 +148,13 @@ namespace License_Generator
                     {
                         ID = dataGrid.Rows[rows].Cells[1].Value.ToString();
                         code = info.Substring(info.Length - 12);
-                        serial_num = GetSerialNum(num);
+                        serial_num = dataGrid.Rows[rows].Cells[3].Value.ToString();
+                        if (serial_num.Contains("-"))
+                        {
+                            num = int.Parse(serial_num.Split('-').Last());
+                            prefix = serial_num.Substring(0, 5);
+                        }
+                        serial_num = prefix+num;
                         feature = dataGrid.Rows[rows].Cells[4].Value.ToString();
                         if (row_list.GetValue() == null)
                         {
@@ -178,23 +185,6 @@ namespace License_Generator
                 rows = rows.GetNext();
             }
             rows.SetNext(new Node<Row>(row));
-        }
-
-
-        /// <summary>
-        /// Creates a serial number in a format that "Encode" function could read
-        /// Input: a number
-        /// Output: a formatted serial number (as a string)
-        /// Author: amazingtali
-        /// </summary>
-        private string GetSerialNum(int n)
-        {
-            if (n / 10 == 0)
-                return "00" + n.ToString();
-            if (n / 100 == 0)
-                return "0" + n.ToString();
-            else
-                return n.ToString();
         }
 
 
