@@ -143,19 +143,33 @@ namespace License_Generator
             {
                 if (dataGrid.Rows[rows].Cells[2].Value != null)
                 {
+                    //the information about the device's cpu, hash code, etc.
                     string info = dataGrid.Rows[rows].Cells[2].Value.ToString();
+
                     if (info.Contains("Hash"))
                     {
+                        //the provider's ID
                         ID = dataGrid.Rows[rows].Cells[1].Value.ToString();
+
+                        //hash code
                         code = info.Substring(info.Length - 12);
+
+                        //serial number
                         serial_num = dataGrid.Rows[rows].Cells[3].Value.ToString();
+
+                        //if serial number is valid
                         if (serial_num.Contains("-"))
                         {
+                            //promote
                             num = int.Parse(serial_num.Split('-').Last());
                             prefix = serial_num.Substring(0, 5);
                         }
                         serial_num = prefix+num;
+                        
+                        //feature or axes number
                         feature = dataGrid.Rows[rows].Cells[4].Value.ToString();
+
+                        //set values for every row in list
                         if (row_list.GetValue() == null)
                         {
                             row_list.SetValue(new Row(ID, code, serial_num, feature));
