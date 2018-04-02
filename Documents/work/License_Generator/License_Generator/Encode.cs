@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.NetworkInformation;
 
 namespace License_Generator
 {
@@ -29,15 +31,17 @@ namespace License_Generator
         public virtual string Get_License(string code, string feature, string serial_num)
         {
             //command that tells cmd to go go to PLINK.exe's dir         
-            pathcommand = "cd " + plink;
+   //         pathcommand = "cd " + plink;
 
             //command for generating the actual license from the server
-            licensecommand = "plink -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -f " + feature + " -s " + serial_num;
+            licensecommand = "\""+plink+"\\plink\" -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -f " + feature + " -s " + serial_num;
 
             //the two commands are needed to be joind with an && so the cmd will run the 2nd command only after the 1st one has succeeded to run
-            string strCmdTxt = "/c " + pathcommand + " && " + licensecommand;
+            string strCmdTxt = "/c " +  licensecommand;
 
             //BeginProcess is called to execute the two commands
+            //strCmdTxt = "/c echo User Authorization Code: [ E2-4UzDOLOH ] verified (feature hello coded).";
+
             BeginProcess(strCmdTxt);
 
             //extracting the license number
@@ -78,19 +82,46 @@ namespace License_Generator
                 p.StartInfo.RedirectStandardOutput = true;
                 p.StartInfo.RedirectStandardError = true;
                 p.Start();
-                while (!p.StandardOutput.EndOfStream)
-                {
-                    output = p.StandardOutput.ReadLine();
-                }
-
+                StreamReader reader = p.StandardOutput;
+                output = reader.ReadToEnd();
                 err = p.StandardError.ReadToEnd();
                 p.WaitForExit();
-
+                p.Close();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+        //this method checks if server can be reached
+        public virtual void CheckIfReachable(string plink_path, string IP, string user)
+        {
+            bool pingable = false;
+            Ping pinger = new Ping();
+            try
+            {
+                PingReply reply = pinger.Send(IP);
+                pingable = reply.Status == IPStatus.Success;
+            }
+            catch (PingException e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+            if (!pingable)
+                StaticVars.serverException = "Server is unreachable. Check internet connection or IP address.";
+            else
+            {
+                string command = "/c \"" + plink + "\\plink\" -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac";
+                BeginProcess(command);
+                if (!output.Contains("VALIDATION"))
+                    StaticVars.serverException = err;
+                else
+                {
+                    StaticVars.serverException = "";
+                }
+            }
+
+
         }
     }
 }

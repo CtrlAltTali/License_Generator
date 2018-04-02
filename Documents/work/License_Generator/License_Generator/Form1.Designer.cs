@@ -42,6 +42,7 @@
             this.plinkBTN = new System.Windows.Forms.Button();
             this.keyBTN = new System.Windows.Forms.Button();
             this.generateBTN = new System.Windows.Forms.Button();
+            this.keyLBL = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -197,12 +198,24 @@
             this.generateBTN.UseVisualStyleBackColor = false;
             this.generateBTN.Click += new System.EventHandler(this.generateBTN_Click);
             // 
+            // keyLBL
+            // 
+            this.keyLBL.AutoSize = true;
+            this.keyLBL.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.keyLBL.ForeColor = System.Drawing.Color.Maroon;
+            this.keyLBL.Location = new System.Drawing.Point(971, 164);
+            this.keyLBL.Name = "keyLBL";
+            this.keyLBL.Size = new System.Drawing.Size(93, 16);
+            this.keyLBL.TabIndex = 17;
+            this.keyLBL.Text = "Key is Missing";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1091, 569);
+            this.Controls.Add(this.keyLBL);
             this.Controls.Add(this.generateBTN);
             this.Controls.Add(this.keyBTN);
             this.Controls.Add(this.plinkBTN);
@@ -240,6 +253,7 @@
         private System.Windows.Forms.Button plinkBTN;
         private System.Windows.Forms.Button keyBTN;
         private System.Windows.Forms.Button generateBTN;
+        private System.Windows.Forms.Label keyLBL;
     }
 }
 

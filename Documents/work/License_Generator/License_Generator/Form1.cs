@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Net;
 
 namespace License_Generator
 {
@@ -28,7 +29,8 @@ namespace License_Generator
         public MainWindow()
         {
             InitializeComponent();
-
+            ipTB.Text = UserSettings.Default.IpAddress;
+            userTB.Text = UserSettings.Default.User;
         }
 
 
@@ -40,40 +42,70 @@ namespace License_Generator
         /// </summary>
         public void Generate_License()
         {
-            operationType = featCMB.Text;
-            operationInput = featTB.Text;
-            IP = ipTB.Text;
-            user = userTB.Text;
-            switch (operationType)
+            if (FileLegal())
             {
-                case "Feature":
-                    en = new Encode_text(IP, user, plink_path, keyName);
-                    break;
-                case "Number":
-                    en = new Encode_num(IP, user, plink_path, keyName);
-                    break;
-            }
-            rowlist = datagridmethods.Read(dataGridView1);
-            Node<Row> rowspointer = rowlist;
-            if (dataGridView1.Rows[0].Cells[6].Value.ToString() == "")
-                dataGridView1.Rows[0].Cells[6].Value = "Verified";
+                operationType = featCMB.Text;
+                operationInput = featTB.Text;
+                IP = ipTB.Text;
+                user = userTB.Text;
+                switch (operationType)
+                {
+                    case "Feature":
+                        en = new Encode_text(IP, user, plink_path, keyName);
+                        break;
+                    case "Number":
+                        en = new Encode_num(IP, user, plink_path, keyName);
+                        break;
+                }
+                rowlist = datagridmethods.Read(dataGridView1);
+                Node<Row> rowspointer = rowlist;
 
-            while (rowspointer != null)
+                en.CheckIfReachable(plink_path, IP, user);
+                if (StaticVars.serverException == "")
+                {
+                    while (rowspointer != null)
+                    {
+                        rowspointer.GetValue().feature = operationInput;
+                        code = rowspointer.GetValue().code;
+                        serialnumber = rowspointer.GetValue().serial_number;
+                        rowspointer.GetValue().license = en.Get_License(code, operationInput, serialnumber);
+                        rowspointer.GetValue().verified = en.Verify();
+                        progressBar.PerformStep();
+                        rowspointer = rowspointer.GetNext();
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(StaticVars.serverException);
+                }
+                progressBar.Value = 0;
+            }
+            else
             {
-                rowspointer.GetValue().feature = operationInput;
-                code = rowspointer.GetValue().code;
-                serialnumber = rowspointer.GetValue().serial_number;
-                rowspointer.GetValue().license = en.Get_License(code, operationInput, serialnumber);
-                rowspointer.GetValue().verified = en.Verify();
-                progressBar.PerformStep();
-                rowspointer = rowspointer.GetNext();
-
+                MessageBox.Show("File is illegal");
             }
-            MessageBox.Show("license generated");
 
         }
 
-
+        public bool FileLegal()
+        {
+            bool a = false;
+            bool b = false;
+            bool c = false;
+            bool d = false;
+            bool e = false;
+            if ( dataGridView1.ColumnCount >= 6)
+            {
+                a = !(dataGridView1.Columns[0].HeaderText == "ID");
+                b = !(dataGridView1.Columns[1].HeaderText == "Hash Code");
+                c = !(dataGridView1.Columns[2].HeaderText == "Serial Number");
+                d = !(dataGridView1.Columns[3].HeaderText == "Feature");
+                e = !(dataGridView1.Columns[4].HeaderText == "License");
+            }
+            return a && b && c && d && e;
+        }
+        
         /// <summary>
         /// Opens File Manager and imports an excel file to the DataGridView
         /// Input: No input
@@ -91,7 +123,7 @@ namespace License_Generator
                 var info = dataGridView1.Rows[i].Cells[2].Value;
                 if (info != null)
                 {
-                    if (info.ToString().Contains("Hash"))
+                    if (info.ToString().Contains("Hash") || datagridmethods.IsHash(info.ToString()))
                         rowcount++;
                 }
             }
@@ -100,7 +132,7 @@ namespace License_Generator
                 progressBar.Visible = true;
                 progressBar.Minimum = 0;
                 progressBar.Maximum = rowcount;
-                progressBar.Value = 1;
+                progressBar.Value = 0;
                 progressBar.Step = 1;
 
             }
@@ -118,14 +150,57 @@ namespace License_Generator
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Excel Documents (*.xls)|*.xls";
-            sfd.FileName = "export.xls";
+            sfd.FileName = "export.xlsx";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 Node<Row> rowspointer = rowlist;
                 datagridmethods.Export(rowspointer, Path.GetFullPath(sfd.FileName));
             }
         }
-
+        /// <summary>
+        /// tells if the data written in the form is legal
+        /// Input: No input
+        /// Output: a boolean value that tells if the program can start generating the license
+        /// Author: amazingtali
+        /// </summary>
+        public bool CanProceed()
+        {
+            bool keyChosen = true, plinkChosen = true,
+                inTheSameDir = true, featureWritten = true,
+                ipIsLegal = true, userWritten = true;
+            IPAddress ip;
+            if (keyPath == "")
+            {
+                keyChosen = false;
+                StaticVars.guiException = "Please choose a key.";
+            }
+            else if (plink_path == "")
+            {
+                plinkChosen = false;
+                StaticVars.guiException = "Please open PLINK.exe.";
+            }
+            else if (plink_path != keyPath)
+            {
+                inTheSameDir = false;
+                StaticVars.guiException = "PLINK.exe and your key should be in the same directory.";
+            }
+            else if (featCMB.Text == "" || featTB.Text == "")
+            {
+                featureWritten = false;
+                StaticVars.guiException = "Please write a feature or a number";
+            }
+            else if(!IPAddress.TryParse(ipTB.Text, out ip))
+            {
+                ipIsLegal = false;
+                StaticVars.guiException = "Please write legal IP Address";
+            }
+            else if(userTB.Text == "")
+            {
+                userWritten = false;
+                StaticVars.guiException = "Please write a user-name";
+            }
+            return keyChosen && plinkChosen && inTheSameDir && featureWritten && ipIsLegal && userWritten;
+        }
         ////////////////////////////////////////////////////////////////////////
 
         private void importBTN_Click(object sender, EventArgs e)
@@ -163,27 +238,20 @@ namespace License_Generator
 
         private void generateBTN_Click(object sender, EventArgs e)
         {
-            if (keyPath == "")
-            {
-                MessageBox.Show("Please choose a key.");
-            }
-            else if (plink_path == "")
-            {
-                MessageBox.Show("Please open PLINK.exe.");
-            }
-            else if (plink_path != keyPath)
-            {
-                MessageBox.Show("PLINK.exe and your key should be in the same directory.");
-            }
-            else if (featCMB.Text == "")
-            {
-                MessageBox.Show("Please write a feature or a number");
-            }
-            else
+            UserSettings.Default.IpAddress = ipTB.Text;
+            UserSettings.Default.User = userTB.Text;
+            if (CanProceed())
             {
                 Generate_License();
                 Node<Row> rowspointer = rowlist;
-                datagridmethods.Update(rowspointer, dataGridView1);
+                if (StaticVars.serverException == "" && FileLegal())
+                {
+                    datagridmethods.Update(rowspointer, dataGridView1);
+                }
+            }
+            else
+            {
+                MessageBox.Show(StaticVars.guiException);
             }
         }
 
@@ -210,6 +278,7 @@ namespace License_Generator
                 }
 
             }
+            keyLBL.Text = keyName;
         }
     }
 }

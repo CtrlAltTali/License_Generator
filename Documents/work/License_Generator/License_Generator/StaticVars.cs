@@ -13,5 +13,7 @@ namespace License_Generator
         public static int featureINDEX = 4;
         public static int licenseINDEX = 5;
         public static int verifiedINDEX = 6;
+        public static string serverException = "";
+        public static string guiException = "";
     }
 }

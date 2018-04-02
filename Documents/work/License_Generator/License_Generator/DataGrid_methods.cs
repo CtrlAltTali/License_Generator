@@ -123,7 +123,13 @@ namespace License_Generator
             return sheetName;
         }
 
-
+        public bool IsHash(string hash)
+        {
+            string[] s = hash.Split(':');
+            if (s.Length == 4)
+                return true;
+            return false;
+        }
         /// <summary>
         /// Reads the data from the dataGrid and returns a linked list that contains the rows in the table
         /// Input: DataGridView
@@ -146,7 +152,7 @@ namespace License_Generator
                     //the information about the device's cpu, hash code, etc.
                     string info = dataGrid.Rows[rows].Cells[2].Value.ToString();
 
-                    if (info.Contains("Hash"))
+                    if (info.ToString().Contains("Hash") ||  IsHash(info.ToString()))
                     {
                         //the provider's ID
                         ID = dataGrid.Rows[rows].Cells[1].Value.ToString();
@@ -164,8 +170,8 @@ namespace License_Generator
                             num = int.Parse(serial_num.Split('-').Last());
                             prefix = serial_num.Substring(0, 5);
                         }
-                        serial_num = prefix+num;
-                        
+                        serial_num = prefix + num;
+
                         //feature or axes number
                         feature = dataGrid.Rows[rows].Cells[4].Value.ToString();
 
@@ -210,6 +216,9 @@ namespace License_Generator
         /// </summary>
         public void Update(Node<Row> row_list, DataGridView dataGrid)
         {
+            string license = "";
+            string hash = "";
+            string serialnumber = "";
             for (int rows = 0; rows < dataGrid.Rows.Count; rows++)
             {
                 if (dataGrid.Rows[rows].Cells[StaticVars.infoINDEX].Value != null)
@@ -217,10 +226,12 @@ namespace License_Generator
                     string info = dataGrid.Rows[rows].Cells[StaticVars.infoINDEX].Value.ToString();
                     if (info.Contains("Hash"))
                     {
+                        license = row_list.GetValue().license;
+                        hash = row_list.GetValue().code;
+                        serialnumber = row_list.GetValue().serial_number;
                         dataGrid.Rows[rows].Cells[StaticVars.featureINDEX].Value = row_list.GetValue().feature;
-                        dataGrid.Rows[rows].Cells[StaticVars.serialnumberINDEX].Value = row_list.GetValue().serial_number;
-                        dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = row_list.GetValue().license;
-                        dataGrid.Rows[rows].Cells[StaticVars.verifiedINDEX].Value = row_list.GetValue().verified;
+                        dataGrid.Rows[rows].Cells[StaticVars.serialnumberINDEX].Value = serialnumber;
+                        dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = hash + "/" + serialnumber + "/" + license;
                         row_list = row_list.GetNext();
                     }
                 }
@@ -259,7 +270,7 @@ namespace License_Generator
             xlWorkSheet.Cells[1, 4] = "Feature";
             xlWorkSheet.Cells[1, 5] = "License";
             xlWorkSheet.Cells[1, 6] = "Verified";
-            
+
             int i = 2;
             while (row_list != null)
             {

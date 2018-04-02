@@ -15,13 +15,13 @@ namespace License_Generator
         public override string Get_License(string code, string feature, string serial_num)
         {
             //command that tells cmd to go go to PLINK.exe's dir 
-            pathcommand = "cd " + plink;
+            //pathcommand = "cd " + plink;
 
             //command for generating the actual license from the server
-            licensecommand = "plink -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -n " + feature + " -s " + serial_num;
+            licensecommand = "\"" + plink + "\\plink\" -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -n " + feature + " -s " + serial_num;
 
             //the two commands are needed to be joind with an && so the cmd will run the 2nd command only after the 1st one has succeeded to run
-            string strCmdTxt = "/c " + pathcommand + " && " + licensecommand;
+            string strCmdTxt = "/c " + licensecommand;
 
             //BeginProcess is called to execute the two commands
             BeginProcess(strCmdTxt);
@@ -53,5 +53,6 @@ namespace License_Generator
         {
             base.BeginProcess(cmdcommand);
         }
+        
     }
 }
