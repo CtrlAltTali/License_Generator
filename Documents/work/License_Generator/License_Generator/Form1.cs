@@ -23,7 +23,6 @@ namespace License_Generator
         string user;
         string code;
         string serialnumber;
-        string plink_path = "";
         string keyName;
         string keyPath = "";
         public MainWindow()
@@ -51,16 +50,16 @@ namespace License_Generator
                 switch (operationType)
                 {
                     case "Feature":
-                        en = new Encode_text(IP, user, plink_path, keyName);
+                        en = new Encode_text(IP, user, keyName);
                         break;
                     case "Number":
-                        en = new Encode_num(IP, user, plink_path, keyName);
+                        en = new Encode_num(IP, user, keyName);
                         break;
                 }
                 rowlist = datagridmethods.Read(dataGridView1);
                 Node<Row> rowspointer = rowlist;
 
-                en.CheckIfReachable(plink_path, IP, user);
+                en.CheckIfReachable( IP, user);
                 if (StaticVars.serverException == "")
                 {
                     while (rowspointer != null)
@@ -168,22 +167,19 @@ namespace License_Generator
             bool keyChosen = true, plinkChosen = true,
                 inTheSameDir = true, featureWritten = true,
                 ipIsLegal = true, userWritten = true;
+            string plink = "plink.exe";
+            bool ifcontains1 = AppDomain.CurrentDomain.BaseDirectory.Contains(plink);
+            bool ifcontains2 = AppDomain.CurrentDomain.BaseDirectory.Contains(plink.ToUpper());
             IPAddress ip;
             if (keyPath == "")
             {
                 keyChosen = false;
                 StaticVars.guiException = "Please choose a key.";
             }
-            else if (plink_path == "")
-            {
-                plinkChosen = false;
-                StaticVars.guiException = "Please open PLINK.exe.";
-            }
-            else if (plink_path != keyPath)
-            {
-                inTheSameDir = false;
-                StaticVars.guiException = "PLINK.exe and your key should be in the same directory.";
-            }
+            //else if (!ifcontains1 && !ifcontains2)
+            //{
+            //    MessageBox.Show("PLINK.EXE should be in the same directory as this program");
+            //}
             else if (featCMB.Text == "" || featTB.Text == "")
             {
                 featureWritten = false;
@@ -213,28 +209,7 @@ namespace License_Generator
             Export_File();
         }
 
-        private void plinkBTN_Click(object sender, EventArgs e)
-        {
-            // Displays an OpenFileDialog so the user can select a Cursor.  
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Exe Files|*.exe;";
-            openFileDialog.Title = "Select an exe File";
-
-            // Show the Dialog.  
-            // If the user clicked OK in the dialog and  
-            // a .exe file was selected, open it.  
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                // Assign the cursor in the Stream to the Form's Cursor property.  
-                plink_path = openFileDialog.FileName;
-                int index = plink_path.LastIndexOf(@"\");
-                if (index > 0)
-                {
-                    plink_path = plink_path.Substring(0, index);
-                }
-
-            }
-        }
+        
 
         private void generateBTN_Click(object sender, EventArgs e)
         {

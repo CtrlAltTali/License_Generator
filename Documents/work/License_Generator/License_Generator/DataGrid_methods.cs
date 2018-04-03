@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Microsoft.Office.Interop;
-using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using System.Configuration;
-using System.IO;
 
 namespace License_Generator
 {
@@ -152,7 +143,7 @@ namespace License_Generator
                     //the information about the device's cpu, hash code, etc.
                     string info = dataGrid.Rows[rows].Cells[2].Value.ToString();
 
-                    if (info.ToString().Contains("Hash") ||  IsHash(info.ToString()))
+                    if (info.ToString().Contains("Hash") || IsHash(info.ToString()))
                     {
                         //the provider's ID
                         ID = dataGrid.Rows[rows].Cells[1].Value.ToString();
@@ -270,15 +261,20 @@ namespace License_Generator
             xlWorkSheet.Cells[1, 4] = "Feature";
             xlWorkSheet.Cells[1, 5] = "License";
             xlWorkSheet.Cells[1, 6] = "Verified";
-
+            string hash = "";
+            string serialnumber = "";
+            string license = "";
             int i = 2;
             while (row_list != null)
             {
+                hash = row_list.GetValue().code.ToString();
+                serialnumber = row_list.GetValue().serial_number.ToString();
+                license = row_list.GetValue().license.ToString();
                 xlWorkSheet.Cells[i, 1] = row_list.GetValue().ID.ToString();
-                xlWorkSheet.Cells[i, 2] = row_list.GetValue().code.ToString();
-                xlWorkSheet.Cells[i, 3] = row_list.GetValue().serial_number.ToString();
-                xlWorkSheet.Cells[i, 4] = row_list.GetValue().feature.ToString(); ;
-                xlWorkSheet.Cells[i, 5] = row_list.GetValue().license.ToString(); ;
+                xlWorkSheet.Cells[i, 2] = hash;
+                xlWorkSheet.Cells[i, 3] = serialnumber;
+                xlWorkSheet.Cells[i, 4] = row_list.GetValue().feature.ToString();
+                xlWorkSheet.Cells[i, 5] = hash + "/" + serialnumber + "/" + license;
                 xlWorkSheet.Cells[i, 6] = row_list.GetValue().verified.ToString();
                 i++;
                 row_list = row_list.GetNext();

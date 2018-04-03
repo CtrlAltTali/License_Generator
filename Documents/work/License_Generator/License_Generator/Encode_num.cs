@@ -9,7 +9,7 @@ namespace License_Generator
     class Encode_num: Encode
     {
 
-        public Encode_num(string IP, string user, string plink_path,string keyName) : base(IP, user, plink_path, keyName) { }
+        public Encode_num(string IP, string user,string keyName) : base(IP, user, keyName) { }
 
         //this method generates license
         public override string Get_License(string code, string feature, string serial_num)
@@ -18,7 +18,7 @@ namespace License_Generator
             //pathcommand = "cd " + plink;
 
             //command for generating the actual license from the server
-            licensecommand = "\"" + plink + "\\plink\" -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -n " + feature + " -s " + serial_num;
+            licensecommand = "plink -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -n " + feature + " -s " + serial_num;
 
             //the two commands are needed to be joind with an && so the cmd will run the 2nd command only after the 1st one has succeeded to run
             string strCmdTxt = "/c " + licensecommand;

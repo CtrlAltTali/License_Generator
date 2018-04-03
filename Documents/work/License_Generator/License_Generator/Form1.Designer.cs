@@ -39,7 +39,6 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.importBTN = new System.Windows.Forms.Button();
             this.exportBTN = new System.Windows.Forms.Button();
-            this.plinkBTN = new System.Windows.Forms.Button();
             this.keyBTN = new System.Windows.Forms.Button();
             this.generateBTN = new System.Windows.Forms.Button();
             this.keyLBL = new System.Windows.Forms.Label();
@@ -159,25 +158,12 @@
             this.exportBTN.UseVisualStyleBackColor = false;
             this.exportBTN.Click += new System.EventHandler(this.exportBTN_Click);
             // 
-            // plinkBTN
-            // 
-            this.plinkBTN.BackColor = System.Drawing.SystemColors.Control;
-            this.plinkBTN.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.plinkBTN.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.plinkBTN.Location = new System.Drawing.Point(837, 117);
-            this.plinkBTN.Name = "plinkBTN";
-            this.plinkBTN.Size = new System.Drawing.Size(133, 32);
-            this.plinkBTN.TabIndex = 14;
-            this.plinkBTN.Text = "Open PLINK.exe";
-            this.plinkBTN.UseVisualStyleBackColor = false;
-            this.plinkBTN.Click += new System.EventHandler(this.plinkBTN_Click);
-            // 
             // keyBTN
             // 
             this.keyBTN.BackColor = System.Drawing.SystemColors.Control;
             this.keyBTN.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyBTN.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.keyBTN.Location = new System.Drawing.Point(837, 155);
+            this.keyBTN.Location = new System.Drawing.Point(837, 117);
             this.keyBTN.Name = "keyBTN";
             this.keyBTN.Size = new System.Drawing.Size(133, 32);
             this.keyBTN.TabIndex = 15;
@@ -203,7 +189,7 @@
             this.keyLBL.AutoSize = true;
             this.keyLBL.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyLBL.ForeColor = System.Drawing.Color.Maroon;
-            this.keyLBL.Location = new System.Drawing.Point(971, 164);
+            this.keyLBL.Location = new System.Drawing.Point(971, 126);
             this.keyLBL.Name = "keyLBL";
             this.keyLBL.Size = new System.Drawing.Size(93, 16);
             this.keyLBL.TabIndex = 17;
@@ -218,7 +204,6 @@
             this.Controls.Add(this.keyLBL);
             this.Controls.Add(this.generateBTN);
             this.Controls.Add(this.keyBTN);
-            this.Controls.Add(this.plinkBTN);
             this.Controls.Add(this.exportBTN);
             this.Controls.Add(this.importBTN);
             this.Controls.Add(this.progressBar);
@@ -250,7 +235,6 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button importBTN;
         private System.Windows.Forms.Button exportBTN;
-        private System.Windows.Forms.Button plinkBTN;
         private System.Windows.Forms.Button keyBTN;
         private System.Windows.Forms.Button generateBTN;
         private System.Windows.Forms.Label keyLBL;

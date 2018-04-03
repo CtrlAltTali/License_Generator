@@ -13,17 +13,15 @@ namespace License_Generator
     {
         protected string IP;
         protected string user;
-        protected string plink;
         protected string licensecommand;
         protected string pathcommand;
         protected string keyName;
         protected string output = "";
         protected string err = "";
-        public Encode(string IP, string user, string plink_path, string keyName)
+        public Encode(string IP, string user, string keyName)
         {
             this.IP = IP;
             this.user = user;
-            this.plink = plink_path;
             this.keyName = keyName;
         }
 
@@ -31,10 +29,10 @@ namespace License_Generator
         public virtual string Get_License(string code, string feature, string serial_num)
         {
             //command that tells cmd to go go to PLINK.exe's dir         
-   //         pathcommand = "cd " + plink;
+            //pathcommand = "cd " + plink;
 
             //command for generating the actual license from the server
-            licensecommand = "\""+plink+"\\plink\" -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -f " + feature + " -s " + serial_num;
+            licensecommand = "plink -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac -h " + code + " -f " + feature + " -s " + serial_num;
 
             //the two commands are needed to be joind with an && so the cmd will run the 2nd command only after the 1st one has succeeded to run
             string strCmdTxt = "/c " +  licensecommand;
@@ -81,6 +79,7 @@ namespace License_Generator
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.RedirectStandardOutput = true;
                 p.StartInfo.RedirectStandardError = true;
+                p.StartInfo.RedirectStandardInput = true;
                 p.Start();
                 StreamReader reader = p.StandardOutput;
                 output = reader.ReadToEnd();
@@ -94,7 +93,7 @@ namespace License_Generator
             }
         }
         //this method checks if server can be reached
-        public virtual void CheckIfReachable(string plink_path, string IP, string user)
+        public virtual void CheckIfReachable( string IP, string user)
         {
             bool pingable = false;
             Ping pinger = new Ping();
@@ -111,7 +110,7 @@ namespace License_Generator
                 StaticVars.serverException = "Server is unreachable. Check internet connection or IP address.";
             else
             {
-                string command = "/c \"" + plink + "\\plink\" -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac";
+                string command = "/c plink -batch -i " + keyName + " " + user + "@" + IP + " ./mcuac";
                 BeginProcess(command);
                 if (!output.Contains("VALIDATION"))
                     StaticVars.serverException = err;

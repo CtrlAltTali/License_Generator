@@ -8,7 +8,7 @@ namespace License_Generator
 {
     class Encode_text: Encode
     {
-        public Encode_text(string IP, string user, string plink_path, string keyName) : base(IP,user,plink_path,keyName)
+        public Encode_text(string IP, string user, string keyName) : base(IP,user,keyName)
         {
         }
         public override string Get_License(string code, string feature, string serial_num)
