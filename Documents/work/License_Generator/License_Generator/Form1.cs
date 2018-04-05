@@ -25,11 +25,13 @@ namespace License_Generator
         string serialnumber;
         string keyName;
         string keyPath = "";
+        int idealnumberofcols = 6;
         public MainWindow()
         {
             InitializeComponent();
             ipTB.Text = UserSettings.Default.IpAddress;
             userTB.Text = UserSettings.Default.User;
+
         }
 
 
@@ -41,70 +43,48 @@ namespace License_Generator
         /// </summary>
         public void Generate_License()
         {
-            if (FileLegal())
+
+            operationType = featCMB.Text;
+            operationInput = featTB.Text;
+            IP = ipTB.Text;
+            user = userTB.Text;
+            switch (operationType)
             {
-                operationType = featCMB.Text;
-                operationInput = featTB.Text;
-                IP = ipTB.Text;
-                user = userTB.Text;
-                switch (operationType)
-                {
-                    case "Feature":
-                        en = new Encode_text(IP, user, keyName);
-                        break;
-                    case "Number":
-                        en = new Encode_num(IP, user, keyName);
-                        break;
-                }
-                rowlist = datagridmethods.Read(dataGridView1);
-                Node<Row> rowspointer = rowlist;
+                case "Feature":
+                    en = new Encode_text(IP, user, keyName);
+                    break;
+                case "Number":
+                    en = new Encode_num(IP, user, keyName);
+                    break;
+            }
+            rowlist = datagridmethods.Read(dataGridView1);
+            Node<Row> rowspointer = rowlist;
 
-                en.CheckIfReachable( IP, user);
-                if (StaticVars.serverException == "")
+            en.CheckIfReachable(IP, user);
+            if (StaticVars.serverException == "")
+            {
+                while (rowspointer != null)
                 {
-                    while (rowspointer != null)
-                    {
-                        rowspointer.GetValue().feature = operationInput;
-                        code = rowspointer.GetValue().code;
-                        serialnumber = rowspointer.GetValue().serial_number;
-                        rowspointer.GetValue().license = en.Get_License(code, operationInput, serialnumber);
-                        rowspointer.GetValue().verified = en.Verify();
-                        progressBar.PerformStep();
-                        rowspointer = rowspointer.GetNext();
+                    rowspointer.GetValue().feature = operationInput;
+                    code = rowspointer.GetValue().code;
+                    serialnumber = rowspointer.GetValue().serial_number;
+                    rowspointer.GetValue().license = en.Get_License(code, operationInput, serialnumber);
+                    rowspointer.GetValue().verified = en.Verify();
+                    progressBar.PerformStep();
+                    rowspointer = rowspointer.GetNext();
 
-                    }
                 }
-                else
-                {
-                    MessageBox.Show(StaticVars.serverException);
-                }
-                progressBar.Value = 0;
             }
             else
             {
-                MessageBox.Show("File is illegal");
+                MessageBox.Show(StaticVars.serverException);
             }
+            progressBar.Value = 0;
 
         }
 
-        public bool FileLegal()
-        {
-            bool a = false;
-            bool b = false;
-            bool c = false;
-            bool d = false;
-            bool e = false;
-            if ( dataGridView1.ColumnCount >= 6)
-            {
-                a = !(dataGridView1.Columns[0].HeaderText == "ID");
-                b = !(dataGridView1.Columns[1].HeaderText == "Hash Code");
-                c = !(dataGridView1.Columns[2].HeaderText == "Serial Number");
-                d = !(dataGridView1.Columns[3].HeaderText == "Feature");
-                e = !(dataGridView1.Columns[4].HeaderText == "License");
-            }
-            return a && b && c && d && e;
-        }
-        
+
+
         /// <summary>
         /// Opens File Manager and imports an excel file to the DataGridView
         /// Input: No input
@@ -126,7 +106,7 @@ namespace License_Generator
                         rowcount++;
                 }
             }
-            if(dataGridView1.Rows.Count > 0)
+            if (dataGridView1.Rows.Count > 0)
             {
                 progressBar.Visible = true;
                 progressBar.Minimum = 0;
@@ -185,17 +165,32 @@ namespace License_Generator
                 featureWritten = false;
                 StaticVars.guiException = "Please write a feature or a number";
             }
-            else if(!IPAddress.TryParse(ipTB.Text, out ip))
+            else if (!IPAddress.TryParse(ipTB.Text, out ip))
             {
                 ipIsLegal = false;
                 StaticVars.guiException = "Please write legal IP Address";
             }
-            else if(userTB.Text == "")
+            else if (userTB.Text == "")
             {
                 userWritten = false;
                 StaticVars.guiException = "Please write a user-name";
             }
             return keyChosen && plinkChosen && inTheSameDir && featureWritten && ipIsLegal && userWritten;
+        }
+        public void NormalizeTable(int startindex, int quantity)
+        {
+            while (quantity > 0)
+            {
+                string name = "F" + startindex;
+                if (dataGridView1.Columns.Contains(name))
+                    dataGridView1.Columns.Remove(name);
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.DataPropertyName = name;
+                column.Name = name;
+                dataGridView1.Columns.Add(column);
+                quantity -= 1;
+                startindex += 1;
+            }
         }
         ////////////////////////////////////////////////////////////////////////
 
@@ -209,17 +204,31 @@ namespace License_Generator
             Export_File();
         }
 
-        
+
 
         private void generateBTN_Click(object sender, EventArgs e)
         {
             UserSettings.Default.IpAddress = ipTB.Text;
             UserSettings.Default.User = userTB.Text;
+            if (dataGridView1.Columns.Count < idealnumberofcols)
+            {
+                int startindex = dataGridView1.Columns.Count;
+                int quantity = idealnumberofcols - startindex+1;
+                NormalizeTable(startindex, quantity);
+                for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                {
+                    string info = dataGridView1.Rows[i].Cells[StaticVars.infoINDEX].Value.ToString();
+                    if (info.Contains("Hash") && info != null)
+                    {
+                        dataGridView1.Rows[i].Cells[StaticVars.featureINDEX].Value = featTB.Text;
+                    }
+                }
+            }
             if (CanProceed())
             {
                 Generate_License();
                 Node<Row> rowspointer = rowlist;
-                if (StaticVars.serverException == "" && FileLegal())
+                if (StaticVars.serverException == "")
                 {
                     datagridmethods.Update(rowspointer, dataGridView1);
                 }

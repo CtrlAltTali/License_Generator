@@ -52,11 +52,7 @@ namespace License_Generator
                 System.Data.DataSet DtSet;
                 System.Data.OleDb.OleDbDataAdapter MyCommand;
                 //Build the connection string
-                string connectionstring = String.Format(@"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};Extended Properties=""Excel 8.0;HDR=YES;IMEX=1;""", filepath);
-                if (filepath.EndsWith(".xlsx"))
-                {
-                    connectionstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filepath + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=1\"";
-                }
+                string connectionstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filepath + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=1\"";
                 string sheetname = GetSheetName(connectionstring, 0);
                 //connect to excel file
                 MyConnection = new System.Data.OleDb.OleDbConnection(connectionstring);
@@ -222,7 +218,10 @@ namespace License_Generator
                         serialnumber = row_list.GetValue().serial_number;
                         dataGrid.Rows[rows].Cells[StaticVars.featureINDEX].Value = row_list.GetValue().feature;
                         dataGrid.Rows[rows].Cells[StaticVars.serialnumberINDEX].Value = serialnumber;
-                        dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = hash + "/" + serialnumber + "/" + license;
+                        if (license != "")
+                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = hash + "/" + serialnumber + "/" + license;
+                        else
+                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = "";
                         row_list = row_list.GetNext();
                     }
                 }
