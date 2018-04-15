@@ -43,8 +43,6 @@ namespace License_Generator
         /// </summary>
         public void Generate_License()
         {
-
-            operationType = featCMB.Text;
             operationInput = featTB.Text;
             IP = ipTB.Text;
             user = userTB.Text;
@@ -56,11 +54,14 @@ namespace License_Generator
                 case "Number":
                     en = new Encode_num(IP, user, keyName);
                     break;
+                case "web":
+                    en = new Encode_web(IP);
+                    break;
             }
             rowlist = datagridmethods.Read(dataGridView1);
             Node<Row> rowspointer = rowlist;
 
-            en.CheckIfReachable(IP, user);
+            en.CheckIfReachable(IP);
             if (StaticVars.serverException == "")
             {
                 while (rowspointer != null)
@@ -144,22 +145,14 @@ namespace License_Generator
         /// </summary>
         public bool CanProceed()
         {
-            bool keyChosen = true, plinkChosen = true,
-                inTheSameDir = true, featureWritten = true,
+            bool keyChosen = true, featureWritten = true,
                 ipIsLegal = true, userWritten = true;
-            string plink = "plink.exe";
-            bool ifcontains1 = AppDomain.CurrentDomain.BaseDirectory.Contains(plink);
-            bool ifcontains2 = AppDomain.CurrentDomain.BaseDirectory.Contains(plink.ToUpper());
             IPAddress ip;
-            if (keyPath == "")
+            if (keyPath == "" && operationType != "web")
             {
                 keyChosen = false;
                 StaticVars.guiException = "Please choose a key.";
             }
-            //else if (!ifcontains1 && !ifcontains2)
-            //{
-            //    MessageBox.Show("PLINK.EXE should be in the same directory as this program");
-            //}
             else if (featCMB.Text == "" || featTB.Text == "")
             {
                 featureWritten = false;
@@ -175,7 +168,7 @@ namespace License_Generator
                 userWritten = false;
                 StaticVars.guiException = "Please write a user-name";
             }
-            return keyChosen && plinkChosen && inTheSameDir && featureWritten && ipIsLegal && userWritten;
+            return keyChosen && featureWritten && ipIsLegal && userWritten;
         }
         public void NormalizeTable(int startindex, int quantity)
         {
@@ -213,7 +206,7 @@ namespace License_Generator
             if (dataGridView1.Columns.Count < idealnumberofcols)
             {
                 int startindex = dataGridView1.Columns.Count;
-                int quantity = idealnumberofcols - startindex+1;
+                int quantity = idealnumberofcols - startindex + 1;
                 NormalizeTable(startindex, quantity);
                 for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                 {
@@ -263,6 +256,20 @@ namespace License_Generator
 
             }
             keyLBL.Text = keyName;
+        }
+
+        private void plinkRBT_CheckedChanged(object sender, EventArgs e)
+        {
+            keyBTN.Enabled = true;
+            userTB.Enabled = true;
+            operationType = featCMB.Text;
+        }
+
+        private void webserRBT_CheckedChanged(object sender, EventArgs e)
+        {
+            operationType = "web";
+            keyBTN.Enabled = false;
+            userTB.Enabled = false;
         }
     }
 }

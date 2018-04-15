@@ -42,6 +42,8 @@
             this.keyBTN = new System.Windows.Forms.Button();
             this.generateBTN = new System.Windows.Forms.Button();
             this.keyLBL = new System.Windows.Forms.Label();
+            this.plinkRBT = new System.Windows.Forms.RadioButton();
+            this.webserRBT = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,7 +52,7 @@
             this.featLBL.AutoSize = true;
             this.featLBL.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.featLBL.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.featLBL.Location = new System.Drawing.Point(833, 236);
+            this.featLBL.Location = new System.Drawing.Point(833, 322);
             this.featLBL.Name = "featLBL";
             this.featLBL.Size = new System.Drawing.Size(74, 20);
             this.featLBL.TabIndex = 2;
@@ -64,7 +66,7 @@
             this.featCMB.Items.AddRange(new object[] {
             "Number",
             "Feature"});
-            this.featCMB.Location = new System.Drawing.Point(913, 236);
+            this.featCMB.Location = new System.Drawing.Point(913, 322);
             this.featCMB.Name = "featCMB";
             this.featCMB.Size = new System.Drawing.Size(82, 24);
             this.featCMB.TabIndex = 3;
@@ -72,7 +74,7 @@
             // featTB
             // 
             this.featTB.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.featTB.Location = new System.Drawing.Point(1001, 235);
+            this.featTB.Location = new System.Drawing.Point(1001, 322);
             this.featTB.Name = "featTB";
             this.featTB.Size = new System.Drawing.Size(80, 25);
             this.featTB.TabIndex = 4;
@@ -91,7 +93,7 @@
             this.userLBL.AutoSize = true;
             this.userLBL.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userLBL.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.userLBL.Location = new System.Drawing.Point(833, 279);
+            this.userLBL.Location = new System.Drawing.Point(833, 361);
             this.userLBL.Name = "userLBL";
             this.userLBL.Size = new System.Drawing.Size(41, 20);
             this.userLBL.TabIndex = 7;
@@ -100,7 +102,7 @@
             // userTB
             // 
             this.userTB.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.userTB.Location = new System.Drawing.Point(913, 276);
+            this.userTB.Location = new System.Drawing.Point(913, 361);
             this.userTB.Name = "userTB";
             this.userTB.Size = new System.Drawing.Size(100, 25);
             this.userTB.TabIndex = 8;
@@ -110,7 +112,7 @@
             this.ipLBL.AutoSize = true;
             this.ipLBL.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ipLBL.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.ipLBL.Location = new System.Drawing.Point(833, 322);
+            this.ipLBL.Location = new System.Drawing.Point(833, 401);
             this.ipLBL.Name = "ipLBL";
             this.ipLBL.Size = new System.Drawing.Size(79, 20);
             this.ipLBL.TabIndex = 9;
@@ -119,7 +121,7 @@
             // ipTB
             // 
             this.ipTB.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ipTB.Location = new System.Drawing.Point(913, 319);
+            this.ipTB.Location = new System.Drawing.Point(913, 401);
             this.ipTB.Name = "ipTB";
             this.ipTB.Size = new System.Drawing.Size(151, 25);
             this.ipTB.TabIndex = 10;
@@ -163,7 +165,7 @@
             this.keyBTN.BackColor = System.Drawing.SystemColors.Control;
             this.keyBTN.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyBTN.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.keyBTN.Location = new System.Drawing.Point(837, 117);
+            this.keyBTN.Location = new System.Drawing.Point(837, 228);
             this.keyBTN.Name = "keyBTN";
             this.keyBTN.Size = new System.Drawing.Size(133, 32);
             this.keyBTN.TabIndex = 15;
@@ -189,11 +191,37 @@
             this.keyLBL.AutoSize = true;
             this.keyLBL.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.keyLBL.ForeColor = System.Drawing.Color.Maroon;
-            this.keyLBL.Location = new System.Drawing.Point(971, 126);
+            this.keyLBL.Location = new System.Drawing.Point(976, 237);
             this.keyLBL.Name = "keyLBL";
             this.keyLBL.Size = new System.Drawing.Size(93, 16);
             this.keyLBL.TabIndex = 17;
             this.keyLBL.Text = "Key is Missing";
+            // 
+            // plinkRBT
+            // 
+            this.plinkRBT.AutoSize = true;
+            this.plinkRBT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.plinkRBT.Location = new System.Drawing.Point(837, 133);
+            this.plinkRBT.Name = "plinkRBT";
+            this.plinkRBT.Size = new System.Drawing.Size(105, 24);
+            this.plinkRBT.TabIndex = 19;
+            this.plinkRBT.TabStop = true;
+            this.plinkRBT.Text = "Use PLINK";
+            this.plinkRBT.UseVisualStyleBackColor = true;
+            this.plinkRBT.CheckedChanged += new System.EventHandler(this.plinkRBT_CheckedChanged);
+            // 
+            // webserRBT
+            // 
+            this.webserRBT.AutoSize = true;
+            this.webserRBT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.webserRBT.Location = new System.Drawing.Point(837, 163);
+            this.webserRBT.Name = "webserRBT";
+            this.webserRBT.Size = new System.Drawing.Size(143, 24);
+            this.webserRBT.TabIndex = 20;
+            this.webserRBT.TabStop = true;
+            this.webserRBT.Text = "Use Web Server";
+            this.webserRBT.UseVisualStyleBackColor = true;
+            this.webserRBT.CheckedChanged += new System.EventHandler(this.webserRBT_CheckedChanged);
             // 
             // MainWindow
             // 
@@ -201,6 +229,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1091, 569);
+            this.Controls.Add(this.webserRBT);
+            this.Controls.Add(this.plinkRBT);
             this.Controls.Add(this.keyLBL);
             this.Controls.Add(this.generateBTN);
             this.Controls.Add(this.keyBTN);
@@ -238,6 +268,8 @@
         private System.Windows.Forms.Button keyBTN;
         private System.Windows.Forms.Button generateBTN;
         private System.Windows.Forms.Label keyLBL;
+        private System.Windows.Forms.RadioButton plinkRBT;
+        private System.Windows.Forms.RadioButton webserRBT;
     }
 }
 

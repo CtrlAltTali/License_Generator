@@ -24,7 +24,10 @@ namespace License_Generator
             this.user = user;
             this.keyName = keyName;
         }
-
+        public Encode(string IP)
+        {
+            this.IP = IP;
+        }
         //this method generates license
         public virtual string Get_License(string code, string feature, string serial_num)
         {
@@ -93,7 +96,7 @@ namespace License_Generator
             }
         }
         //this method checks if server can be reached
-        public virtual void CheckIfReachable( string IP, string user)
+        public virtual void CheckIfReachable( string IP)
         {
             bool pingable = false;
             Ping pinger = new Ping();
