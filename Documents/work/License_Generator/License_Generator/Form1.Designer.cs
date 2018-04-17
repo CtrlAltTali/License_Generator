@@ -44,6 +44,8 @@
             this.keyLBL = new System.Windows.Forms.Label();
             this.plinkRBT = new System.Windows.Forms.RadioButton();
             this.webserRBT = new System.Windows.Forms.RadioButton();
+            this.costumerLBL = new System.Windows.Forms.Label();
+            this.costumerCB = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -112,16 +114,16 @@
             this.ipLBL.AutoSize = true;
             this.ipLBL.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ipLBL.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.ipLBL.Location = new System.Drawing.Point(833, 401);
+            this.ipLBL.Location = new System.Drawing.Point(833, 439);
             this.ipLBL.Name = "ipLBL";
-            this.ipLBL.Size = new System.Drawing.Size(79, 20);
+            this.ipLBL.Size = new System.Drawing.Size(60, 20);
             this.ipLBL.TabIndex = 9;
-            this.ipLBL.Text = "IP Address:";
+            this.ipLBL.Text = "IP / URL:";
             // 
             // ipTB
             // 
             this.ipTB.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ipTB.Location = new System.Drawing.Point(913, 401);
+            this.ipTB.Location = new System.Drawing.Point(913, 438);
             this.ipTB.Name = "ipTB";
             this.ipTB.Size = new System.Drawing.Size(151, 25);
             this.ipTB.TabIndex = 10;
@@ -223,12 +225,39 @@
             this.webserRBT.UseVisualStyleBackColor = true;
             this.webserRBT.CheckedChanged += new System.EventHandler(this.webserRBT_CheckedChanged);
             // 
+            // costumerLBL
+            // 
+            this.costumerLBL.AutoSize = true;
+            this.costumerLBL.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.costumerLBL.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.costumerLBL.Location = new System.Drawing.Point(833, 403);
+            this.costumerLBL.Name = "costumerLBL";
+            this.costumerLBL.Size = new System.Drawing.Size(72, 20);
+            this.costumerLBL.TabIndex = 21;
+            this.costumerLBL.Text = "Costumer:";
+            // 
+            // costumerCB
+            // 
+            this.costumerCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.costumerCB.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.costumerCB.FormattingEnabled = true;
+            this.costumerCB.Items.AddRange(new object[] {
+            "Servotronix",
+            "HNC",
+            "Greatoo"});
+            this.costumerCB.Location = new System.Drawing.Point(913, 399);
+            this.costumerCB.Name = "costumerCB";
+            this.costumerCB.Size = new System.Drawing.Size(82, 24);
+            this.costumerCB.TabIndex = 22;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1091, 569);
+            this.Controls.Add(this.costumerCB);
+            this.Controls.Add(this.costumerLBL);
             this.Controls.Add(this.webserRBT);
             this.Controls.Add(this.plinkRBT);
             this.Controls.Add(this.keyLBL);
@@ -270,6 +299,8 @@
         private System.Windows.Forms.Label keyLBL;
         private System.Windows.Forms.RadioButton plinkRBT;
         private System.Windows.Forms.RadioButton webserRBT;
+        private System.Windows.Forms.Label costumerLBL;
+        private System.Windows.Forms.ComboBox costumerCB;
     }
 }
 

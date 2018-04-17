@@ -6,7 +6,7 @@
       <Value Profile="(Default)">mcuac</Value>
     </Setting>
     <Setting Name="IpAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">10.4.20.38</Value>
+      <Value Profile="(Default)">http://80.179.84.108/lic/test.php</Value>
     </Setting>
   </Settings>
 </SettingsFile>

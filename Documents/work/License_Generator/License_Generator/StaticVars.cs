@@ -15,5 +15,6 @@ namespace License_Generator
         public static int verifiedINDEX = 6;
         public static string serverException = "";
         public static string guiException = "";
+        public static Dictionary<string, string> costumers = new Dictionary<string, string>();
     }
 }

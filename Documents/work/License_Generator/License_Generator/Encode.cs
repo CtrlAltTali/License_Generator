@@ -58,7 +58,7 @@ namespace License_Generator
                 }
             }
 
-            return license;
+            return code + "/" + serial_num + "/" + license;
         }
 
         //this method verifies that a license number was created

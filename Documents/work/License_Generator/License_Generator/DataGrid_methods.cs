@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Linq;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -165,11 +165,11 @@ namespace License_Generator
                         //set values for every row in list
                         if (row_list.GetValue() == null)
                         {
-                            row_list.SetValue(new Row(ID, code, serial_num, feature));
+                            row_list.SetValue(new Row(ID, code, serial_num, feature, info));
                         }
                         else
                         {
-                            AddToList(row_list, new Row(ID, code, serial_num, feature));
+                            AddToList(row_list, new Row(ID, code, serial_num, feature, info));
                         }
                         num++;
                     }
@@ -219,9 +219,9 @@ namespace License_Generator
                         dataGrid.Rows[rows].Cells[StaticVars.featureINDEX].Value = row_list.GetValue().feature;
                         dataGrid.Rows[rows].Cells[StaticVars.serialnumberINDEX].Value = serialnumber;
                         if (license != "")
-                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = hash + "/" + serialnumber + "/" + license;
+                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = license;
                         else
-                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = "";
+                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = "ERROR";
                         row_list = row_list.GetNext();
                     }
                 }

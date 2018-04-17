@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace License_Generator
 {
-    class Encode_num: Encode
+    class Encode_num : Encode
     {
 
-        public Encode_num(string IP, string user,string keyName) : base(IP, user, keyName) { }
+        public Encode_num(string IP, string user, string keyName) : base(IP, user, keyName) { }
 
         //this method generates license
         public override string Get_License(string code, string feature, string serial_num)
@@ -39,7 +39,7 @@ namespace License_Generator
                 }
             }
 
-            return license;
+            return code + "/" + serial_num + "/" + license;
         }
 
         //this method verifies that a license number was created
@@ -53,6 +53,6 @@ namespace License_Generator
         {
             base.BeginProcess(cmdcommand);
         }
-        
+
     }
 }

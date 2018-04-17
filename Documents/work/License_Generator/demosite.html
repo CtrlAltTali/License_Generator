@@ -2,6 +2,7 @@
 	<body>
 		<div id="licform" class="form">
 			<form method="post">
+				<p id="demo"></p>
 				<br>		
 				test:</br>
 
@@ -21,12 +22,16 @@
 
 				</select>
 
-				<input type=submit value="submit">
+				<input type="submit" value="submit" onclick="LicGen()">
 
 			</form>
 			<script>
-				function LicGen(hashcode, feature, serialnumber){
-					
+				function LicGen(){
+					//document.getElementById("demo").textContent  = "Hello World";
+					var hashcode = document.getElementsByName("text");
+					var feature = document.getElementsByName("ax");
+					var costumer = document.getElementsByName("cust");
+					document.write( hashcode[0].value+"/"+feature[0].value+"/"+costumer[0].value);
 				}
 			</script>
 		</div>

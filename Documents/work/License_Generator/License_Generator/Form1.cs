@@ -25,12 +25,22 @@ namespace License_Generator
         string serialnumber;
         string keyName;
         string keyPath = "";
+        string info;
+
         int idealnumberofcols = 6;
         public MainWindow()
         {
             InitializeComponent();
             ipTB.Text = UserSettings.Default.IpAddress;
             userTB.Text = UserSettings.Default.User;
+            keyBTN.Enabled = false;
+            userTB.Enabled = false;
+            costumerCB.Enabled = false;
+            ipTB.Enabled = false;
+            generateBTN.Enabled = false;
+            StaticVars.costumers.Add("Servotronix", "S");
+            StaticVars.costumers.Add("HNC", "S");
+            StaticVars.costumers.Add("Greatoo", "G");
 
         }
 
@@ -60,7 +70,6 @@ namespace License_Generator
             }
             rowlist = datagridmethods.Read(dataGridView1);
             Node<Row> rowspointer = rowlist;
-
             en.CheckIfReachable(IP);
             if (StaticVars.serverException == "")
             {
@@ -69,8 +78,11 @@ namespace License_Generator
                     rowspointer.GetValue().feature = operationInput;
                     code = rowspointer.GetValue().code;
                     serialnumber = rowspointer.GetValue().serial_number;
-                    rowspointer.GetValue().license = en.Get_License(code, operationInput, serialnumber);
-                    rowspointer.GetValue().verified = en.Verify();
+                    info = rowspointer.GetValue().info;
+                    if(operationType == "web")
+                        rowspointer.GetValue().license = en.Get_License(info, operationInput, costumerCB.Text);
+                    else
+                        rowspointer.GetValue().license = en.Get_License(code, operationInput, serialnumber);
                     progressBar.PerformStep();
                     rowspointer = rowspointer.GetNext();
 
@@ -158,11 +170,11 @@ namespace License_Generator
                 featureWritten = false;
                 StaticVars.guiException = "Please write a feature or a number";
             }
-            else if (!IPAddress.TryParse(ipTB.Text, out ip))
-            {
-                ipIsLegal = false;
-                StaticVars.guiException = "Please write legal IP Address";
-            }
+            //else if (!IPAddress.TryParse(ipTB.Text, out ip) || !CheckURLValid(ipTB.Text))
+            //{
+            //    ipIsLegal = false;
+            //    StaticVars.guiException = "Please write a legal address";
+            //}
             else if (userTB.Text == "")
             {
                 userWritten = false;
@@ -170,6 +182,11 @@ namespace License_Generator
             }
             return keyChosen && featureWritten && ipIsLegal && userWritten;
         }
+        //public static bool CheckURLValid( string source)
+        //{
+        //    Uri uriResult;
+        //    return Uri.TryCreate(source, UriKind.Absolute, out uriResult) && uriResult.Scheme == Uri.UriSchemeHttp;
+        //}
         public void NormalizeTable(int startindex, int quantity)
         {
             while (quantity > 0)
@@ -262,6 +279,9 @@ namespace License_Generator
         {
             keyBTN.Enabled = true;
             userTB.Enabled = true;
+            costumerCB.Enabled = false;
+            ipTB.Enabled = true;
+            generateBTN.Enabled = true;
             operationType = featCMB.Text;
         }
 
@@ -270,6 +290,9 @@ namespace License_Generator
             operationType = "web";
             keyBTN.Enabled = false;
             userTB.Enabled = false;
+            ipTB.Enabled = true;
+            generateBTN.Enabled = true;
+            costumerCB.Enabled = true;
         }
     }
 }

@@ -9,17 +9,19 @@ namespace License_Generator
     class Row
     {
         public string ID { get; set; }
+        public string info { get; set; }
         public string code { get; set; }
         public string serial_number { get; set; }
         public string feature { get; set; }
         public string license { get; set; }
         public bool verified { get; set; }
-        public Row(string ID, string code, string serial_number, string feature)
+        public Row(string ID, string code, string serial_number, string feature, string info)
         {
             this.code = code;
             this.serial_number = serial_number;
             this.feature = feature;
             this.ID = ID;
+            this.info = info;
             this.verified = false;
         }
         public Row(string code, string serial_number)
