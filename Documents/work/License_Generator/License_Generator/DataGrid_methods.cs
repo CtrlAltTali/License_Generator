@@ -221,7 +221,7 @@ namespace License_Generator
                         if (license != "")
                             dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = license;
                         else
-                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = "ERROR";
+                            dataGrid.Rows[rows].Cells[StaticVars.licenseINDEX].Value = "ERROR: "+ StaticVars.webserverException;
                         row_list = row_list.GetNext();
                     }
                 }

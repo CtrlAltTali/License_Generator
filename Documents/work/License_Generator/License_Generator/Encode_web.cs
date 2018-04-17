@@ -54,9 +54,13 @@ namespace License_Generator
 
                     output = System.Text.Encoding.Default.GetString(result);
                     output = output.Replace("</br>", "").Replace("/n","");
-
+                    
                     if (output.Contains("try again"))
+                    {
+                        StaticVars.webserverException = output;
                         output = "";
+                    }
+                        
                 }
                 catch (WebException e)
                 {
