@@ -11,6 +11,7 @@ namespace License_Generator
     {
         public Encode_web(string IP) : base(IP) { }
 
+        //this method generates license
         public override string Get_License(string info, string feature, string costumer)
         {
             string output = "";
@@ -18,14 +19,21 @@ namespace License_Generator
             {
                 try
                 {
+                    //created a collection for the html form
                     System.Collections.Specialized.NameValueCollection collection =
                         new System.Collections.Specialized.NameValueCollection();
+
+                    //added values for the html form object
                     collection.Add("text", info);
                     collection.Add("ax", feature);
+
                     collection.Add("cust", StaticVars.costumers[costumer]);
                     client.Proxy = null;
-                    //MessageBox.Show(collection.GetValues("text")[0].ToString());
+                    
+                    //post the form and get result
                     byte[] result = client.UploadValues(IP, "POST", collection);
+
+                    //get the first *written* line in the html form
                     int[] indexarray = new int[2];
                     int newlinecount = 0;
                     for (int i = 0; i < result.Length; i++)
@@ -37,6 +45,8 @@ namespace License_Generator
                         }
                             
                     }
+
+                    //if it is our license
                     if (newlinecount > 1)
                         result = result.Skip(indexarray[0]).Take(indexarray[1] - indexarray[0]).ToArray();
                     else
@@ -55,6 +65,8 @@ namespace License_Generator
             }
             return output;
         }
+
+        //this method checks if web form can be reached
         public override void CheckIfReachable(string IP)
         {
             System.Net.WebClient web = new System.Net.WebClient();
@@ -65,7 +77,7 @@ namespace License_Generator
                 using (System.IO.StreamReader reader = new System.IO.StreamReader(stream))
                 {
                     String text = reader.ReadToEnd();
-                    if (!text.Contains("submit"))
+                    if (!text.Contains("submit")) //the submit button only shows up in our form
                         StaticVars.serverException = "Web server cannot be reached";
                 }
             }
