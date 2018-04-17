@@ -170,6 +170,11 @@ namespace License_Generator
                 featureWritten = false;
                 StaticVars.guiException = "Please write a feature or a number";
             }
+            else if (costumerCB.Text == "" )
+            {
+                featureWritten = false;
+                StaticVars.guiException = "Please choose a costumer";
+            }
             //else if (!IPAddress.TryParse(ipTB.Text, out ip) || !CheckURLValid(ipTB.Text))
             //{
             //    ipIsLegal = false;
