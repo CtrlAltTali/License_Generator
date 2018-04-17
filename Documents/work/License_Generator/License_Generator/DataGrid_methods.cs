@@ -68,7 +68,7 @@ namespace License_Generator
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.ToString());
+                    MessageBox.Show(e.Message);
                 }
 
                 MyConnection.Close();
@@ -104,7 +104,7 @@ namespace License_Generator
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.ToString());
+                    MessageBox.Show(e.Message);
                 }
             }
             return sheetName;
@@ -259,7 +259,6 @@ namespace License_Generator
             xlWorkSheet.Cells[1, 3] = "Serial Number";
             xlWorkSheet.Cells[1, 4] = "Feature";
             xlWorkSheet.Cells[1, 5] = "License";
-            xlWorkSheet.Cells[1, 6] = "Verified";
             string hash = "";
             string serialnumber = "";
             string license = "";
@@ -273,8 +272,10 @@ namespace License_Generator
                 xlWorkSheet.Cells[i, 2] = hash;
                 xlWorkSheet.Cells[i, 3] = serialnumber;
                 xlWorkSheet.Cells[i, 4] = row_list.GetValue().feature.ToString();
-                xlWorkSheet.Cells[i, 5] = hash + "/" + serialnumber + "/" + license;
-                xlWorkSheet.Cells[i, 6] = row_list.GetValue().verified.ToString();
+                if (license != "")
+                    xlWorkSheet.Cells[i, 5] = license;
+                else
+                    xlWorkSheet.Cells[i, 5] = "ERROR: " + StaticVars.webserverException;
                 i++;
                 row_list = row_list.GetNext();
             }

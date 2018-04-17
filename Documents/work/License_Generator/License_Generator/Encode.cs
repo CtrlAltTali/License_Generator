@@ -92,7 +92,7 @@ namespace License_Generator
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine(e.Message);
             }
         }
         //this method checks if server can be reached
@@ -107,7 +107,7 @@ namespace License_Generator
             }
             catch (PingException e)
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(e.Message);
             }
             if (!pingable)
                 StaticVars.serverException = "Server is unreachable. Check internet connection or IP address.";
