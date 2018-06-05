@@ -64,7 +64,18 @@ namespace License_Generator
                 {
                     //put the excel table in the data grid object
                     MyCommand.Fill(DtSet);
+                    if (DtSet.Tables[0].Columns.Count < 4)
+                    {
+                        DtSet.Tables[0].Columns.Add("Serial Number", typeof(int));
+                        for (int i = 0; i < DtSet.Tables[0].Rows.Count-2; i++)
+                        {
+                            if(DtSet.Tables[0].Rows[i + 1][2].ToString()!="")
+                                DtSet.Tables[0].Rows[i+1]["Serial Number"] = i;
+                        }
+                    }
+                        
                     dataGridView.DataSource = DtSet.Tables[0];
+
                 }
                 catch (Exception e)
                 {
@@ -73,6 +84,7 @@ namespace License_Generator
 
                 MyConnection.Close();
             }
+            
         }
 
 

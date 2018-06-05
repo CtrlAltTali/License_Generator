@@ -26,7 +26,7 @@ namespace License_Generator
         string keyName;
         string keyPath = "";
         string info;
-
+        string xmlfilename = "Costumers.xml";
         int idealnumberofcols = 6;
         public MainWindow()
         {
@@ -38,12 +38,31 @@ namespace License_Generator
             costumerCB.Enabled = false;
             ipTB.Enabled = false;
             generateBTN.Enabled = false;
-            StaticVars.costumers.Add("Servotronix", "S");
-            StaticVars.costumers.Add("HNC", "S");
-            StaticVars.costumers.Add("Greatoo", "G");
+
+            XMLHelper.Add("Servotronix", xmlfilename);
+            XMLHelper.Add("HNC", xmlfilename);
+            XMLHelper.Add("Greatoo", xmlfilename);
+            AddCostumersFromXML(xmlfilename);
 
         }
-
+        /// <summary>
+        /// adds the costumers written in xml file to the costumer dictionary
+        /// </summary>
+        /// <param name="filename"></param>
+        public void AddCostumersFromXML(string filename)
+        {
+            if (!XMLHelper.FileExists(filename))
+                XMLHelper.CreateBasicXML(filename);
+            string[] items = XMLHelper.GetAllItems(filename);
+            for (int i = 0; i < items.Length; i++)
+            {
+                int startindex = items[i].IndexOf('>')+1;
+                int endindex = items[i].LastIndexOf('<');
+                string costumer = items[i].Substring(startindex, endindex - startindex);
+                string letter = costumer[0].ToString();
+                StaticVars.costumers.Add(costumer, letter);
+            }
+        }
 
         /// <summary>
         /// gets a license and puts it in the suitable row
@@ -223,6 +242,11 @@ namespace License_Generator
 
         private void generateBTN_Click(object sender, EventArgs e)
         {
+            if(!StaticVars.costumers.ContainsKey(costumerCB.Text))
+                StaticVars.costumers.Add(costumerCB.Text, costumerCB.Text[0].ToString());
+            if (!XMLHelper.ItemExistsInFile(costumerCB.Text, xmlfilename))
+                XMLHelper.Add(costumerCB.Text, xmlfilename);
+
             UserSettings.Default.IpAddress = ipTB.Text;
             UserSettings.Default.User = userTB.Text;
             if (dataGridView1.Columns.Count < idealnumberofcols)
@@ -298,6 +322,10 @@ namespace License_Generator
             ipTB.Enabled = true;
             generateBTN.Enabled = true;
             costumerCB.Enabled = true;
+            foreach(string costumer in StaticVars.costumers.Keys)
+            {
+                costumerCB.Items.Add(costumer);
+            }
         }
     }
 }

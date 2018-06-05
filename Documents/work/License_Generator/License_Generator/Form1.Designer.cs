@@ -238,13 +238,8 @@
             // 
             // costumerCB
             // 
-            this.costumerCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.costumerCB.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.costumerCB.FormattingEnabled = true;
-            this.costumerCB.Items.AddRange(new object[] {
-            "Servotronix",
-            "HNC",
-            "Greatoo"});
             this.costumerCB.Location = new System.Drawing.Point(913, 399);
             this.costumerCB.Name = "costumerCB";
             this.costumerCB.Size = new System.Drawing.Size(82, 24);
